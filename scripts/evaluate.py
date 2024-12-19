@@ -5,7 +5,7 @@ from transformers import GPT2LMHeadModel, GPT2Tokenizer, DistilBertForSequenceCl
 from prepare_data import generate_test
 from tqdm import tqdm
 
-def load_config(config_path='config.yaml'):
+def load_config(config_path='../configs/config.yaml'):
     with open(config_path, 'r') as file:
         config = yaml.safe_load(file)
     return config

@@ -1,3 +1,4 @@
+import wandb
 from transformers import GPT2LMHeadModel, GPT2Tokenizer, DistilBertForSequenceClassification, DistilBertTokenizer
 from torch.utils.data import DataLoader
 import torch
@@ -11,7 +12,7 @@ import os
 from datasets import load_dataset, Dataset, DatasetDict
 
 
-def load_config(config_path='config.yaml'):
+def load_config(config_path='../configs/config.yaml'):
     with open(config_path, 'r') as file:
         config = yaml.safe_load(file)
     return config
@@ -48,7 +49,6 @@ def liti(theta_init, theta_slerp, nu):
         averaged_state_dict[param_name] = (1 - nu) * theta_init[param_name] + nu * theta_slerp[param_name]
     
     return averaged_state_dict
-
 
 def train_warp(config):
     I = config['training_params']['iterations']
@@ -106,15 +106,20 @@ def train_warp(config):
                 logits = sft_model(inputs).logits
                 logits = F.log_softmax(logits, dim=-1)            
             
-               
                 logits_ema = prev_model(inputs).logits
                 logits_ema = F.softmax(logits_ema, dim=-1)
                 
                 kl_reward = F.kl_div(logits, logits_ema)
                 
-                final_loss = loss * rewards[0] - beta* kl_reward * loss
+                final_loss = loss * rewards[0] - beta * kl_reward * loss
                 
-                # print('loss: ', final_loss.item())
+                final_loss_abs = torch.abs(final_loss)
+                wandb.log({
+                    "loss": final_loss_abs.item(),
+                    # "reward": rewards[0].item(),
+                    # "kl_reward": kl_reward.item()
+                })
+                
                 final_loss.backward()
                 optimizer.step()
                 
@@ -132,11 +137,22 @@ def train_warp(config):
     weights = liti(sft_model.state_dict(), theta_slerp, 1 / 2)
 
     sft_model.load_state_dict(weights)
+    
+    
     sft_model.save_pretrained(config['model_paths']['output_model'])
+    
+    artifact = wandb.Artifact("final-model", type="model")
+    artifact.add_file(os.path.join(config['model_paths']['output_model'], "pytorch_model.bin"))
+    wandb.log_artifact(artifact)
     
     return sft_model
 
 
 if __name__ == "__main__":
     config = load_config()
+    
+    wandb.init(project="warp-training", config=config)
+    
     train_warp(config)
+    
+    wandb.finish()

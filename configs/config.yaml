@@ -1,12 +1,12 @@
 model_paths:
-  reward_model: '../../results/reward/checkpoint-4221'
-  reward_tokenizer: '../../results/reward/checkpoint-4221'
+  reward_model: '../results/reward/checkpoint-4221'
+  reward_tokenizer: '../results/reward/checkpoint-4221'
   sft_model: 'lvwerra/gpt2-imdb'
-  output_model: '../../results/warp_model'
+  output_model: '../results/warp_model'
 
 training_params:
   iterations: 2  #I
-  training_steps: 150 #T
+  training_steps: 100 #T
   rl_runs: 2 #M
   ema_update_rate: 0.01 #mu
   interpolation_factor: 0.5 #nu
@@ -24,7 +24,7 @@ dataset:
   max_tokens: 18
 
 reward:
-  output_dir: '../../results/reward'
+  output_dir: '../results/reward'
   max_length: 512
   num_train_epochs: 3
   per_device_train_batch_size: 16
