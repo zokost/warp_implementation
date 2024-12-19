@@ -1,24 +1,24 @@
-import wandb
-from transformers import GPT2LMHeadModel, GPT2Tokenizer, DistilBertForSequenceClassification, DistilBertTokenizer
-from torch.utils.data import DataLoader
-import torch
-import copy
-import numpy as np
-from tqdm import tqdm
-import torch.nn.functional as F
-from prepare_data import create_prompts
-import yaml
 import os
-from datasets import load_dataset, Dataset, DatasetDict
+import copy
+import yaml
+import random
+import numpy as np
 
+import torch
+import torch.nn.functional as F
+from torch.utils.data import DataLoader
+from tqdm import tqdm
+from transformers import GPT2LMHeadModel, GPT2Tokenizer, DistilBertForSequenceClassification, DistilBertTokenizer
+from datasets import load_dataset, Dataset, DatasetDict
+import wandb
+
+from prepare_data import create_prompts
+from set_seed import set_seed
 
 def load_config(config_path='../configs/config.yaml'):
     with open(config_path, 'r') as file:
         config = yaml.safe_load(file)
     return config
-
-import torch
-import torch.nn.functional as F
 
 def slerp(initial_state_dict, model_0, model_1, interpolation_factor, eps=1e-6):
 
@@ -51,6 +51,9 @@ def liti(theta_init, theta_slerp, nu):
     return averaged_state_dict
 
 def train_warp(config):
+    seed = config.get('seed', 42)  
+    set_seed(seed)
+    
     I = config['training_params']['iterations']
     T = config['training_params']['training_steps']
     M = config['training_params']['rl_runs']
@@ -78,7 +81,6 @@ def train_warp(config):
     
     train_prompts = create_prompts()
     
-    device = 'cuda'
     for i in range(I):
         theta_list = []
         

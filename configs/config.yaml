@@ -31,3 +31,4 @@ reward:
 
 device: 'cuda'  
 max_length: 25
+seed: 42

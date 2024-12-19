@@ -1,17 +1,10 @@
-from datasets import load_dataset
-from torch.utils.data import Dataset
-import torch
-import numpy as np
 import yaml
+import numpy as np
+
+import torch
+from torch.utils.data import Dataset
+from datasets import load_dataset
 from tqdm import tqdm
-
-
-
-from datasets import load_dataset
-from torch.utils.data import Dataset
-import torch
-import numpy as np
-import yaml
 
 class PairsDataset(Dataset):
     def __init__(self, positive_comments, negative_comments, tokenizer, max_length=512):

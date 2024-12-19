@@ -1,16 +1,12 @@
-import wandb
-from transformers import (
-    DistilBertForSequenceClassification,
-    DistilBertTokenizer
-)
-from trl import (
-    RewardTrainer,
-    RewardConfig,
-)
-import torch
-import yaml
-from prepare_data import prepare_dataset_for_reward
 import os
+import yaml
+
+import torch
+import wandb
+from transformers import DistilBertForSequenceClassification, DistilBertTokenizer
+from trl import RewardTrainer, RewardConfig
+
+from prepare_data import prepare_dataset_for_reward
 
 def load_config(config_path='../configs/config.yaml'):
     with open(config_path, 'r') as file:
@@ -19,6 +15,9 @@ def load_config(config_path='../configs/config.yaml'):
 
 if __name__ == "__main__":
     wandb.init(project="warp-reward", config=load_config())
+    
+    seed = config.get('seed', 42)  
+    set_seed(seed)
     
     config = load_config()
     device = torch.device(config['device'] if torch.cuda.is_available() else 'cpu')

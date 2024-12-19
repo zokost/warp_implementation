@@ -1,9 +1,11 @@
-import torch
 import yaml
+
+import torch
 import torch.nn.functional as F
 from transformers import GPT2LMHeadModel, GPT2Tokenizer, DistilBertForSequenceClassification, DistilBertTokenizer
-from prepare_data import generate_test
 from tqdm import tqdm
+
+from prepare_data import generate_test
 
 def load_config(config_path='../configs/config.yaml'):
     with open(config_path, 'r') as file:
@@ -11,6 +13,10 @@ def load_config(config_path='../configs/config.yaml'):
     return config
 
 def evaluate(sft_model, warp_model, sft_model_tokenizer, reward_model, reward_tokenizer, device, config):
+    
+    seed = config.get('seed', 42)  
+    set_seed(seed)
+    
     sft_model_tokenizer.pad_token = sft_model_tokenizer.eos_token
     sft_model_tokenizer.padding_side = 'left'
     
