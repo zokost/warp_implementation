@@ -1,6 +1,9 @@
 # warp-implementation
 
-This repository implements **WARP (Weight Averaged Rewarded Policies)**, a novel alignment strategy for large language models (LLMs) introduced in the paper *"WARP: On the Benefits of Weight Averaged Rewarded Policies"* by Alexandre Ramé et al. (Google DeepMind). WARP optimizes the trade-off between KL regularization and reward maximization in Reinforcement Learning from Human Feedback (RLHF), improving alignment and performance of LLMs.
+This repository implements **WARP (Weight Averaged Rewarded Policies)**, a novel alignment strategy for large language models (LLMs) introduced in the paper [WARP: On the Benefits of Weight Averaged Rewarded Policies](https://arxiv.org/pdf/2406.16768v1) by Alexandre Ramé et al. (Google DeepMind). WARP optimizes the trade-off between KL regularization and reward maximization in Reinforcement Learning from Human Feedback (RLHF), improving alignment and performance of LLMs.
+
+![image](https://github.com/user-attachments/assets/3d330d09-9819-4c66-a5a1-fad67404cfed)
+
 
 ## Features
 - **Dynamic Anchor with EMA**: Uses the exponential moving average of the policy as a dynamic anchor for KL regularization.
